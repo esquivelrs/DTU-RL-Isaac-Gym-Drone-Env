@@ -1,0 +1,9 @@
+<mujoco model="Quadcopter">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true" />
+  <worldbody>
+    <body name="chassis" pos="0 0 0">
+      <geom density="50" pos="0 0 0" size="0.1 0.015" type="cylinder" />
+      <joint name="root_joint" type="free" />
+    </body>
+  </worldbody>
+</mujoco>

@@ -58,7 +58,7 @@ class DroneHoops(VecTask):
         dofs_per_env = 6
         
         # Drone has 5 bodies: 1 root, 4 rotors and the marker
-        bodies_per_env = 10
+        self.bodies_per_env = 10
 
         self.root_tensor = self.gym.acquire_actor_root_state_tensor(self.sim)
         #self.dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
@@ -98,18 +98,24 @@ class DroneHoops(VecTask):
 
         # control tensors
         self.thrusts = torch.zeros((self.num_envs, 4), dtype=torch.float32, device=self.device, requires_grad=False)
-        self.forces = torch.zeros((self.num_envs, bodies_per_env, 3), dtype=torch.float32, device=self.device, requires_grad=False)
+        self.forces = torch.zeros((self.num_envs, self.bodies_per_env, 3), dtype=torch.float32, device=self.device, requires_grad=False)
 
         self.all_actor_indices = torch.arange(self.num_envs * 2, dtype=torch.int32, device=self.device).reshape((self.num_envs, 2))
+        
+        self.vec_collision = gymtorch.wrap_tensor(self.gym.acquire_net_contact_force_tensor(self.sim))
+        print("Collision: ", self.vec_collision.shape)
+        self.collision = self.vec_collision.view(self.num_envs, 10, 3)
 
         if self.viewer:
-            cam_pos = gymapi.Vec3(2.25, 2.25, 3.0)
-            cam_target = gymapi.Vec3(3.5, 4.0, 1.9)
+            # cam_pos = gymapi.Vec3(2.25, 2.25, 3.0)
+            # cam_target = gymapi.Vec3(3.5, 4.0, 1.9)
+            cam_pos = gymapi.Vec3(-3.0, -3.0, 1.8)
+            cam_target = gymapi.Vec3(2.2, 2.0, 1.0)
             self.gym.viewer_camera_look_at(self.viewer, None, cam_pos, cam_target)
 
             # need rigid body states for visualizing thrusts
             self.rb_state_tensor = self.gym.acquire_rigid_body_state_tensor(self.sim)
-            self.rb_states = gymtorch.wrap_tensor(self.rb_state_tensor).view(self.num_envs, bodies_per_env, 13)
+            self.rb_states = gymtorch.wrap_tensor(self.rb_state_tensor).view(self.num_envs, self.bodies_per_env, 13)
             self.rb_positions = self.rb_states[..., 0:3]
             self.rb_quats = self.rb_states[..., 3:7]
 
@@ -148,9 +154,9 @@ class DroneHoops(VecTask):
         asset_options.slices_per_cylinder = 40
         asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
 
-        asset_options = gymapi.AssetOptions()
+        #asset_options = gymapi.AssetOptions()
         asset_options.fix_base_link = True
-        asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX
+        #asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX
         
         #marker_asset = self.gym.create_sphere(self.sim, 0.1, asset_options)
         marker_asset = self.gym.load_asset(self.sim, asset_root, hoop_asset_file, asset_options)
@@ -198,6 +204,7 @@ class DroneHoops(VecTask):
                 self.rotor_env_offsets[i, ..., 1] = env_origin.y
                 self.rotor_env_offsets[i, ..., 2] = env_origin.z
 
+    
 
 
     def set_targets(self, env_ids):
@@ -217,8 +224,11 @@ class DroneHoops(VecTask):
         # self.target_root_positions[env_ids, 1] = self.root_states[env_ids, 1] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
         # self.target_root_positions[env_ids, 2] = self.root_states[env_ids, 2] + torch_rand_float(-0.2, 1.5, (num_sets, 1), self.device).flatten()
         
+        # add 0.2m to the target position in the Z axis
         
-        self.marker_positions[env_ids] = self.target_root_positions[env_ids]
+        self.marker_positions[env_ids, 0] = self.target_root_positions[env_ids, 0]
+        self.marker_positions[env_ids, 1] = self.target_root_positions[env_ids, 1] + 0.3
+        self.marker_positions[env_ids, 2] = self.target_root_positions[env_ids, 2]
         #self.hole_positions[env_ids] = self.target_root_positions[env_ids]
         # copter "position" is at the bottom of the legs, so shift the target up so it visually aligns better
         #self.marker_positions[env_ids, 2] += 0.0
@@ -286,7 +296,7 @@ class DroneHoops(VecTask):
         
         #print(self.dt * thrust_prop_0, thrust_prop_1, thrust_prop_2, thrust_prop_3)
 
-        force_constant = 0.25*self.drone_mass*9.82*torch.ones((self.num_envs, 1), dtype=torch.float32, device=self.device_id, requires_grad=False)
+        #force_constant = 0.25*self.drone_mass*9.82*torch.ones((self.num_envs, 1), dtype=torch.float32, device=self.device_id, requires_grad=False)
         
         
         self.forces[:, 1, 2] = self.dt * thrust_prop_0
@@ -309,7 +319,7 @@ class DroneHoops(VecTask):
         self.gym.refresh_dof_state_tensor(self.sim)
 
         self.compute_observations()
-        #self.compute_contacts()
+        self.compute_contacts()
         self.compute_reward()
 
         # debug viz
@@ -338,8 +348,28 @@ class DroneHoops(VecTask):
 
     def compute_contacts(self):
         # compute when a drone has crashed with the hoop
-        self.collision = gymtorch.wrap_tensor(self.gym.acquire_net_contact_force_tensor(self.sim))
-        print(self.collision.shape)  
+        
+        #acquire_net_contact_force_tensor(self: Gym, arg0: Sim)→ Tensor
+        # Retrieves buffer for net contract forces. The buffer has shape (num_rigid_bodies, 3). Each contact force state contains one value for each X, Y, Z axis.
+        #refresh_net_contact_force_tensor(self: Gym, arg0: Sim)
+        
+        self.gym.refresh_net_contact_force_tensor(self.sim)
+
+        # Convert the boolean tensor to a float tensor
+        #self.collision_indicator = self.collision_indicator.float()
+
+        # Add an extra dimension to match the desired shape
+        #self.collision_indicator = self.collision_indicator.unsqueeze(-1)
+
+        #print("Collision indicator: ", self.collision_indicator.shape)
+        #print("Collision: ", self.collision_indicator)
+        # # print if collision is detected:
+        # if self.collision.nonzero(as_tuple=False).squeeze(-1).shape[0] != 0:
+        #     print("Collision: ", self.collision.nonzero(as_tuple=False).squeeze(-1).shape, self.collision[self.collision.nonzero(as_tuple=False).squeeze(-1)])
+        # #print(self.collision)
+        # # print the number of env that has a collition is detected and the force of the collision
+        # #print("Collision: ", self.collision.nonzero(as_tuple=False).squeeze(-1).shape, self.collision[self.collision.nonzero(as_tuple=False).squeeze(-1)])
+        
         
     
     def compute_reward(self):
@@ -349,7 +379,7 @@ class DroneHoops(VecTask):
             self.root_quats,
             self.root_linvels,
             self.root_angvels,
-            self.reset_buf, self.progress_buf, self.max_episode_length
+            self.reset_buf, self.progress_buf, self.max_episode_length, self.collision
         )
 
 
@@ -358,19 +388,25 @@ class DroneHoops(VecTask):
 #####################################################################
 
 @torch.jit.script
-def compute_drone_reward(root_positions, target_root_positions, root_quats, root_linvels, root_angvels, reset_buf, progress_buf, max_episode_length):
-    # type: (Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, float) -> Tuple[Tensor, Tensor]
+def compute_drone_reward(root_positions, target_root_positions, root_quats, root_linvels, root_angvels, reset_buf, progress_buf, max_episode_length, collision):
+    # type: (Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, float, Tensor) -> Tuple[Tensor, Tensor]
 
+    
+    # distance to the normal of the target position
+    target_dist_norm = torch.sqrt(torch.square(target_root_positions[..., 0:2] - root_positions[..., 0:2]).sum(-1))
+    # distance to the plane of the target position
+    target_dist_plane =  root_positions[..., 1] - target_root_positions[..., 1]
+    
     # entrance to the hoop is 0.3m in front of the hoop
     # target_root_positions_exit = target_root_positions.clone()
-    # target_root_positions_exit[..., 2] -= 0.3
+    # target_root_positions_exit[..., 1] -= 0.3
     
     
     # target_dist = torch.sqrt(torch.square(target_root_positions - root_positions).sum(-1))
     # target_dist_exit = torch.sqrt(torch.square(target_root_positions_exit - root_positions).sum(-1))
     
     # pos_reward = torch.where(target_dist > 0.05, 2.0 / (1.0 + target_dist * target_dist), 3.0 / (1.0 + target_dist_exit * target_dist_exit))
-    
+    # #################
     
     # # distance to target position    
     # target_dist = torch.sqrt(torch.square(target_root_positions - root_positions).sum(-1))
@@ -386,11 +422,18 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     # print(target_dist)
     # pos_reward = 3.0 / (1.0 + target_dist * target_dist) 
     
-    # # distance to target position    
-    target_dist = torch.sqrt(torch.square(target_root_positions - root_positions).sum(-1))
-    print(target_dist)
-    pos_reward = 3.0 / (1.0 + target_dist * target_dist) 
+      
+    #target_root_positions[..., 1] -= 0.4
     
+    # # distance to target position  
+    target_dist = torch.sqrt(torch.square(target_root_positions - root_positions).sum(-1))
+    ## print(target_dist)
+    pos_reward = 2.0 / (1.0 + target_dist * target_dist) 
+    
+    ##  f = max[1-(dp/dmax), 0] where dp is the distance to the target plane means distance in x axis and dmax is a threshold distance
+    #f = torch.max(1 - (target_root_positions[..., 0] - root_positions[..., 0]) / 0.5, torch.zeros_like(target_root_positions[..., 0]))
+    
+    #pos_reward += 
     
     
     
@@ -408,8 +451,9 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     reward = pos_reward + pos_reward * (up_reward + spinnage_reward)
     
     # time penalty
-    # time_penalty = progress_buf / max_episode_length
-    # reward -= time_penalty
+    #time_penalty = 3.0 * progress_buf / max_episode_length
+    #reward -= time_penalty
+    
 
     # resets due to misbehavior
     ones = torch.ones_like(reset_buf)
@@ -419,12 +463,22 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     die = torch.where(ups[..., 2] < 0, ones, die)
     
     # query contact state to see if we've crashed
-    #die = torch.where(collision > 0.0, ones, die)
+    #
+    
+    #collision_indicator = collision.abs().sum(dim=-1).sum(dim=-1)
+    #die = torch.where(collision_indicator > 0.0, ones, die)
+    #print("Collision: ", target_dist)
     
     hoop = torch.where(target_dist < 0.5, ones, die)
     
-    
+    #reach target
+    #Reach target
+    reach_goal = 10000.0
+    condition = torch.logical_and(target_dist_plane < 0.05, target_dist_norm < 0.010)
 
+    die = torch.where(condition, ones, die)
+    reward = torch.where(condition, reward + reach_goal, reward)
+    
 
     # resets due to episode length
     reset = torch.where(progress_buf >= max_episode_length - 1, ones, die)

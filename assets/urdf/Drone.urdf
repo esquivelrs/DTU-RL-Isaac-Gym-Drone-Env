@@ -13,7 +13,9 @@
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.2"/>
+        <!-- <sphere radius="0.01"/> -->
+        <!-- <box size="0.15 0.15 0.03"/> -->
+        <cylinder radius="0.2" length="0.04"/>
       </geometry>
     </collision>
     <inertial>

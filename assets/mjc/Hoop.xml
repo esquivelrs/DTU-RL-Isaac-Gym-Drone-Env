@@ -1,0 +1,9 @@
+<mujoco model="Hoop">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true" />
+  <worldbody>
+    <body name="chassis" pos="0 0 0">
+      <geom density="50" pos="0 0 0" size="0.2 0.02" type="capsule" euler="90 0 0"/>
+      <joint name="root_joint" type="free" />
+    </body>
+  </worldbody>
+</mujoco>
