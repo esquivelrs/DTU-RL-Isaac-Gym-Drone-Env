@@ -445,14 +445,22 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     # spinning
     spinnage = torch.abs(root_angvels[..., 2])
     spinnage_reward = 1.0 / (1.0 + spinnage * spinnage)
+    
+    
+    #collision_indicator = collision.abs().sum(dim=-1).sum(dim=-1)
+    #pos_reward_col = torch.where(collision_indicator == 0.0, pos_reward, -pos_reward)
 
     # combined reward
     # uprigness and spinning only matter when close to the target
     reward = pos_reward + pos_reward * (up_reward + spinnage_reward)
     
+    # if collition_reward != 0.0:
+    #     print("Collision: ", collition_reward)
+    #reward += collition_reward ## issues with the drone passing through the hoop
+    
     # time penalty
-    #time_penalty = 3.0 * progress_buf / max_episode_length
-    #reward -= time_penalty
+    # time_penalty = 1.0 * progress_buf / max_episode_length
+    # reward -= time_penalty
     
 
     # resets due to misbehavior
@@ -465,7 +473,8 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     # query contact state to see if we've crashed
     #
     
-    #collision_indicator = collision.abs().sum(dim=-1).sum(dim=-1)
+
+    
     #die = torch.where(collision_indicator > 0.0, ones, die)
     #print("Collision: ", target_dist)
     
@@ -474,10 +483,15 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     #reach target
     #Reach target
     reach_goal = 10000.0
+    
     condition = torch.logical_and(target_dist_plane < 0.05, target_dist_norm < 0.010)
 
     die = torch.where(condition, ones, die)
     reward = torch.where(condition, reward + reach_goal, reward)
+    
+    # condition out of hoop
+    # condition = torch.logical_and(target_dist_plane < 0.0 , target_dist_norm > 0.4)
+    # die = torch.where(condition, ones, die)
     
 
     # resets due to episode length
