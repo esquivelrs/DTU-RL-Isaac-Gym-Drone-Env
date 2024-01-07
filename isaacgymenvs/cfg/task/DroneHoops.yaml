@@ -9,6 +9,7 @@ env:
   envSpacing: 2.5
   maxEpisodeLength: 2000
   enableDebugVis: False
+  saveData: True
 
   clipObservations: 5.0
   clipActions: 1.0

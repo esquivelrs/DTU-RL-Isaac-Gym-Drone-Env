@@ -27,6 +27,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import math
+import logging
 import numpy as np
 import os
 import torch
@@ -105,6 +106,9 @@ class DroneHoops(VecTask):
         self.vec_collision = gymtorch.wrap_tensor(self.gym.acquire_net_contact_force_tensor(self.sim))
         print("Collision: ", self.vec_collision.shape)
         self.collision = self.vec_collision.view(self.num_envs, 10, 3)
+        
+        self.thrusts_log_list = []
+        self.file = open('logs/data.csv','wb')
 
         if self.viewer:
             # cam_pos = gymapi.Vec3(2.25, 2.25, 3.0)
@@ -206,18 +210,17 @@ class DroneHoops(VecTask):
 
     
 
-
     def set_targets(self, env_ids):
         num_sets = len(env_ids)
         # set target position in the env wall center XZ
-        # self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
-        # self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
-        # self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1
+        self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
+        self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
+        self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1.5
         
         # # set target position in a random position in the center of the env
-        self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
-        self.target_root_positions[env_ids, 1] = torch_rand_float(0, 0.5, (num_sets, 1), self.device).flatten() - self.cfg["env"]['envSpacing']
-        self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
+        # self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
+        # self.target_root_positions[env_ids, 1] = torch_rand_float(0, 0.5, (num_sets, 1), self.device).flatten() - self.cfg["env"]['envSpacing']
+        # self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
         
         # # set target position in a random position based on the drone position
         #self.target_root_positions[env_ids, 0] = self.root_states[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
@@ -251,9 +254,9 @@ class DroneHoops(VecTask):
         actor_indices = self.all_actor_indices[env_ids, 0].flatten()
 
         self.root_states[env_ids] = self.initial_root_states[env_ids]
-        self.root_states[env_ids, 0] += torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
-        self.root_states[env_ids, 1] += torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
-        self.root_states[env_ids, 2] += torch_rand_float(-0.2, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 0] = torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 1] = torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 2] = torch_rand_float(0.5, 2.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 0] = 2 + self.target_root_positions[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 1] = 2 + self.target_root_positions[env_ids, 1] + torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 2] = self.target_root_positions[env_ids, 2] + torch_rand_float(-0.2, 1.5, (num_resets, 1), self.device).flatten()
@@ -298,6 +301,11 @@ class DroneHoops(VecTask):
 
         #force_constant = 0.25*self.drone_mass*9.82*torch.ones((self.num_envs, 1), dtype=torch.float32, device=self.device_id, requires_grad=False)
         
+        #print("Thrust: ", thrust_prop_0, thrust_prop_1, thrust_prop_2, thrust_prop_3)
+        self.thrusts[:, 0] = thrust_prop_0
+        self.thrusts[:, 1] = thrust_prop_1
+        self.thrusts[:, 2] = thrust_prop_2
+        self.thrusts[:, 3] = thrust_prop_3
         
         self.forces[:, 1, 2] = self.dt * thrust_prop_0
         self.forces[:, 2, 2] = self.dt * thrust_prop_1
@@ -321,6 +329,14 @@ class DroneHoops(VecTask):
         self.compute_observations()
         self.compute_contacts()
         self.compute_reward()
+        
+        #, self.obs_buf,self.rew_buf
+        #data_log = torch.stack([self.reset_buf, self.progress_buf, self.thrusts[:, 0],self.thrusts[:, 1],self.thrusts[:, 2], , self.thrusts[:, 3]], dim=1)
+        if self.cfg["env"]["saveData"]:
+            data_log = torch.cat([self.reset_buf.unsqueeze(1), self.progress_buf.unsqueeze(1), 
+                                  self.thrusts, self.root_positions, self.target_root_positions, self.rew_buf.unsqueeze(1)], dim=1)
+            data_log = data_log.cpu().numpy()
+            np.savetxt(self.file, data_log, delimiter=",")
 
         # debug viz
         if self.viewer and self.debug_viz:

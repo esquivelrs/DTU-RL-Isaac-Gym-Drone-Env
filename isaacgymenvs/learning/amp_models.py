@@ -33,6 +33,8 @@ from rl_games.algos_torch.models import ModelA2CContinuousLogStd
 class ModelAMPContinuous(ModelA2CContinuousLogStd):
     def __init__(self, network):
         super().__init__(network)
+        
+        print("%#############################AMPMODELCONTINUOUS")
         return
 
     def build(self, config):

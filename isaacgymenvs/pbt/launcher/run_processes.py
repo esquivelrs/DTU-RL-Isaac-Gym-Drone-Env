@@ -32,6 +32,7 @@ def ensure_dir_exists(path) -> str:
 
 
 def run(run_description, args):
+    print("Running launcher with args", args)
     experiments = run_description.experiments
     max_parallel = args.max_parallel
 

@@ -50,8 +50,8 @@ from tensorboardX import SummaryWriter
 class AMPAgent(common_agent.CommonAgent):
 
     def __init__(self, base_name, params):
+        print("%#############################AMPAgent")
         super().__init__(base_name, params)
-
         if self.normalize_value:
             self.value_mean_std = self.central_value_net.model.value_mean_std if self.has_central_value else self.model.value_mean_std
         if self._normalize_amp_input:
@@ -90,7 +90,7 @@ class AMPAgent(common_agent.CommonAgent):
 
     def play_steps(self):
         self.set_eval()
-
+        print("play_steps")
         epinfos = []
         update_list = self.update_list
 
