@@ -10,6 +10,7 @@ env:
   maxEpisodeLength: 2000
   enableDebugVis: False
   saveData: True
+  hoop_position: "fixed" # "random_env" or "fixed" or "random_drone"
 
   clipObservations: 5.0
   clipActions: 1.0

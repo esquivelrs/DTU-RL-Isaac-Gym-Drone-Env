@@ -217,20 +217,23 @@ class DroneHoops(VecTask):
     def set_targets(self, env_ids):
         num_sets = len(env_ids)
         # set target position in the env wall center XZ
-        self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
-        self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
-        self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1.5
         
-        # # set target position in a random position in the center of the env
-        # self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
-        # self.target_root_positions[env_ids, 1] = torch_rand_float(0, 0.5, (num_sets, 1), self.device).flatten() - self.cfg["env"]['envSpacing']
-        # self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
-        
-        # # set target position in a random position based on the drone position
-        #self.target_root_positions[env_ids, 0] = self.root_states[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
-        #self.target_root_positions[env_ids, 1] = self.root_states[env_ids, 1] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
-        #self.target_root_positions[env_ids, 2] = self.root_states[env_ids, 2] + torch_rand_float(-0.2, 1.5, (num_sets, 1), self.device).flatten()
-        
+        # "random_env" or "fixed" or "random_drone"
+        if self.cfg["env"]["hoop_position"] == "fixed":
+            self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
+            self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
+            self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1.5
+        elif self.cfg["env"]["hoop_position"] == "random_env":
+            self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 1] = torch_rand_float(0, 0.5, (num_sets, 1), self.device).flatten() - self.cfg["env"]['envSpacing']
+            self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
+        elif self.cfg["env"]["hoop_position"] == "random_drone":
+            self.target_root_positions[env_ids, 0] = self.root_states[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 1] = self.root_states[env_ids, 1] + torch_rand_float(-1.5, -0.5, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 2] = self.root_states[env_ids, 2] + torch_rand_float(-0.2, 1.0, (num_sets, 1), self.device).flatten()
+        else:
+            raise ValueError("Invalid hoop position option")
+            
         # add 0.2m to the target position in the Z axis
         
         self.marker_positions[env_ids, 0] = self.target_root_positions[env_ids, 0]
