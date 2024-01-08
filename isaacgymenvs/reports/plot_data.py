@@ -6,7 +6,10 @@ from mpl_toolkits.mplot3d import Axes3D
 data = np.loadtxt('logs/data.csv', delimiter=',')
 
 # Number of environments
-num_envs = 3
+num_envs = 5
+
+collision_counts = np.zeros(num_envs, dtype=int)
+reward_env = []
 
 # Separate data by environment and plot thrust values
 for i in range(num_envs):
@@ -20,6 +23,13 @@ for i in range(num_envs):
     # Assuming drone position is in columns 6 to 8 and hoop position is in columns 9 to 11
     drone_pos = data_env[:, 6:9]
     hoop_pos = data_env[:, 9:12]
+    
+    
+    reward_data = data_env[:, 12]
+    collision_data = data_env[:, 13]
+    target_data = data_env[:, 14]
+    
+
 
     # Create a plot for each environment
     plt.figure()
@@ -37,8 +47,12 @@ for i in range(num_envs):
 
     # Split drone_pos into subarrays each time reset_buf is 1, and plot each subarray separately
     splits = np.where(reset_buf == 1)[0]
+    splits = splits[:-1]
     for start, end in zip(np.r_[0, splits+1], np.r_[splits+1, len(drone_pos)]):
         ax.plot(drone_pos[start:end, 0], drone_pos[start:end, 1], drone_pos[start:end, 2])
+        
+           
+
 
     # Draw a square frame around the hoop position for each subarray
     for hp in hoop_pos[splits]:
@@ -63,5 +77,4 @@ for i in range(num_envs):
     ax.set_zlim(mid_z - max_range, mid_z + max_range)
 
 
-# Show the plots
 plt.show()
