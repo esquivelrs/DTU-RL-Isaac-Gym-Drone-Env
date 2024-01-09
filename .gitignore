@@ -1,5 +1,6 @@
 isaacgymenvs/runs/*
-isaacgymenvs/wandb
+isaacgymenvs/wandb*
+isaacgymenvs/logs*
 isaacgymenvs/isaacgymenvs.egg-info
 isaacgymenvs/__pycache__
 isaacgymenvs/.ipynb_checkpoints
@@ -12,3 +13,4 @@ isaacgymenvs/recorded_frames
 *.pkl
 *.prof
 *.pyc
+
