@@ -9,6 +9,8 @@ env:
   envSpacing: 2.5
   maxEpisodeLength: 2000
   enableDebugVis: False
+  saveData: False
+  hoop_position: "random_env" # "random_env" or "fixed" or "random_drone"
 
   clipObservations: 5.0
   clipActions: 1.0

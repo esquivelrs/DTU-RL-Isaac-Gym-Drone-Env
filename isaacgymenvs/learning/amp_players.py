@@ -39,6 +39,8 @@ class AMPPlayerContinuous(common_player.CommonPlayer):
 
     def __init__(self, params):
         config = params['config']
+        
+        print("%#############################AMPPlayerContinuous")
 
         self._normalize_amp_input = config.get('normalize_amp_input', True)
         self._disc_reward_scale = config['disc_reward_scale']
@@ -51,6 +53,7 @@ class AMPPlayerContinuous(common_player.CommonPlayer):
         super().restore(fn)
         if self._normalize_amp_input:
             checkpoint = torch_ext.load_checkpoint(fn)
+            print("checkpoint_loaded")
             self._amp_input_mean_std.load_state_dict(checkpoint['amp_input_mean_std'])
         return
     

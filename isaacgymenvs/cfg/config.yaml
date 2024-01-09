@@ -41,11 +41,11 @@ sigma: ''
 # set to True to use multi-gpu training
 multi_gpu: False
 
-wandb_activate: False
+wandb_activate: True
 wandb_group: ''
 wandb_name: ${train.params.config.name}
-wandb_entity: ''
-wandb_project: 'isaacgymenvs'
+wandb_entity: 'rolando-esq'
+wandb_project: 'IsaacGymDrone'
 wandb_tags: []
 wandb_logcode_dir: '' 
 

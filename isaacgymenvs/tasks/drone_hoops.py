@@ -27,6 +27,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import math
+import logging
 import numpy as np
 import os
 import torch
@@ -59,6 +60,7 @@ class DroneHoops(VecTask):
         
         # Drone has 5 bodies: 1 root, 4 rotors and the marker
         self.bodies_per_env = 10
+        self.target_buf = torch.zeros(self.num_envs, device=self.device, dtype=torch.float)
 
         self.root_tensor = self.gym.acquire_actor_root_state_tensor(self.sim)
         #self.dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
@@ -105,6 +107,12 @@ class DroneHoops(VecTask):
         self.vec_collision = gymtorch.wrap_tensor(self.gym.acquire_net_contact_force_tensor(self.sim))
         print("Collision: ", self.vec_collision.shape)
         self.collision = self.vec_collision.view(self.num_envs, 10, 3)
+        
+        self.thrusts_log_list = []
+        self.file = ''
+        if self.cfg["env"]["saveData"]:
+            self.file = open('logs/data.csv','wb')
+            
 
         if self.viewer:
             # cam_pos = gymapi.Vec3(2.25, 2.25, 3.0)
@@ -206,24 +214,26 @@ class DroneHoops(VecTask):
 
     
 
-
     def set_targets(self, env_ids):
         num_sets = len(env_ids)
         # set target position in the env wall center XZ
-        self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
-        self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
-        self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1
         
-        # # set target position in a random position in the center of the env
-        # self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
-        # self.target_root_positions[env_ids, 1] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
-        # self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
-        
-        # # set target position in a random position based on the drone position
-        # self.target_root_positions[env_ids, 0] = self.root_states[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
-        # self.target_root_positions[env_ids, 1] = self.root_states[env_ids, 1] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
-        # self.target_root_positions[env_ids, 2] = self.root_states[env_ids, 2] + torch_rand_float(-0.2, 1.5, (num_sets, 1), self.device).flatten()
-        
+        # "random_env" or "fixed" or "random_drone"
+        if self.cfg["env"]["hoop_position"] == "fixed":
+            self.target_root_positions[env_ids, 0] = torch.zeros(num_sets, device=self.device)
+            self.target_root_positions[env_ids, 1] = torch.zeros(num_sets, device=self.device) - self.cfg["env"]['envSpacing']
+            self.target_root_positions[env_ids, 2] = torch.zeros(num_sets, device=self.device) + 1.5
+        elif self.cfg["env"]["hoop_position"] == "random_env":
+            self.target_root_positions[env_ids, 0] = torch_rand_float(-1, 1, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 1] = torch_rand_float(0, 0.5, (num_sets, 1), self.device).flatten() - self.cfg["env"]['envSpacing']
+            self.target_root_positions[env_ids, 2] = torch_rand_float(1, 1.5, (num_sets, 1), self.device).flatten()
+        elif self.cfg["env"]["hoop_position"] == "random_drone":
+            self.target_root_positions[env_ids, 0] = self.root_states[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 1] = self.root_states[env_ids, 1] + torch_rand_float(-1.5, -0.5, (num_sets, 1), self.device).flatten()
+            self.target_root_positions[env_ids, 2] = self.root_states[env_ids, 2] + torch_rand_float(-0.2, 1.0, (num_sets, 1), self.device).flatten()
+        else:
+            raise ValueError("Invalid hoop position option")
+            
         # add 0.2m to the target position in the Z axis
         
         self.marker_positions[env_ids, 0] = self.target_root_positions[env_ids, 0]
@@ -251,9 +261,9 @@ class DroneHoops(VecTask):
         actor_indices = self.all_actor_indices[env_ids, 0].flatten()
 
         self.root_states[env_ids] = self.initial_root_states[env_ids]
-        self.root_states[env_ids, 0] += torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
-        self.root_states[env_ids, 1] += torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
-        self.root_states[env_ids, 2] += torch_rand_float(-0.2, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 0] = torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 1] = torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
+        self.root_states[env_ids, 2] = torch_rand_float(0.5, 2.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 0] = 2 + self.target_root_positions[env_ids, 0] + torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 1] = 2 + self.target_root_positions[env_ids, 1] + torch_rand_float(-1.5, 1.5, (num_resets, 1), self.device).flatten()
         # self.root_states[env_ids, 2] = self.target_root_positions[env_ids, 2] + torch_rand_float(-0.2, 1.5, (num_resets, 1), self.device).flatten()
@@ -262,6 +272,7 @@ class DroneHoops(VecTask):
 
         self.reset_buf[env_ids] = 0
         self.progress_buf[env_ids] = 0
+        self.target_buf[env_ids] = 0
 
         return torch.unique(torch.cat([target_actor_indices, actor_indices]))
 
@@ -298,6 +309,11 @@ class DroneHoops(VecTask):
 
         #force_constant = 0.25*self.drone_mass*9.82*torch.ones((self.num_envs, 1), dtype=torch.float32, device=self.device_id, requires_grad=False)
         
+        #print("Thrust: ", thrust_prop_0, thrust_prop_1, thrust_prop_2, thrust_prop_3)
+        self.thrusts[:, 0] = thrust_prop_0
+        self.thrusts[:, 1] = thrust_prop_1
+        self.thrusts[:, 2] = thrust_prop_2
+        self.thrusts[:, 3] = thrust_prop_3
         
         self.forces[:, 1, 2] = self.dt * thrust_prop_0
         self.forces[:, 2, 2] = self.dt * thrust_prop_1
@@ -321,6 +337,21 @@ class DroneHoops(VecTask):
         self.compute_observations()
         self.compute_contacts()
         self.compute_reward()
+        
+        #, self.obs_buf,self.rew_buf
+        #data_log = torch.stack([self.reset_buf, self.progress_buf, self.thrusts[:, 0],self.thrusts[:, 1],self.thrusts[:, 2], , self.thrusts[:, 3]], dim=1)
+        if self.cfg["env"]["saveData"]:
+            
+            collision_indicator = self.collision.abs().sum(dim=-1).sum(dim=-1)
+            collision_ind = torch.where(collision_indicator != 0.0, 1, 0)
+            if collision_ind.nonzero(as_tuple=False).squeeze(-1).shape[0] != 0:
+                print("Collision: ", collision_ind.nonzero(as_tuple=False).squeeze(-1).shape, collision_ind[collision_ind.nonzero(as_tuple=False).squeeze(-1)])
+            
+            data_log = torch.cat([self.reset_buf.unsqueeze(1), self.progress_buf.unsqueeze(1),
+                                  self.thrusts, self.root_positions, self.target_root_positions, self.rew_buf.unsqueeze(1), 
+                                  collision_ind.unsqueeze(1), self.target_buf.unsqueeze(1)], dim=1)
+            data_log = data_log.cpu().numpy()
+            np.savetxt(self.file, data_log, delimiter=",")
 
         # debug viz
         if self.viewer and self.debug_viz:
@@ -373,7 +404,7 @@ class DroneHoops(VecTask):
         
     
     def compute_reward(self):
-        self.rew_buf[:], self.reset_buf[:] = compute_drone_reward(
+        self.rew_buf[:], self.reset_buf[:], self.target_buf[:] = compute_drone_reward(
             self.root_positions,
             self.target_root_positions,
             self.root_quats,
@@ -389,11 +420,15 @@ class DroneHoops(VecTask):
 
 @torch.jit.script
 def compute_drone_reward(root_positions, target_root_positions, root_quats, root_linvels, root_angvels, reset_buf, progress_buf, max_episode_length, collision):
-    # type: (Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, float, Tensor) -> Tuple[Tensor, Tensor]
+    # type: (Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, Tensor, float, Tensor) -> Tuple[Tensor, Tensor, Tensor]
 
     
     # distance to the normal of the target position
-    target_dist_norm = torch.sqrt(torch.square(target_root_positions[..., 0:2] - root_positions[..., 0:2]).sum(-1))
+    #target_dist_norm = torch.sqrt(torch.square(target_root_positions[..., 0:2] - root_positions[..., 0:2]).sum(-1))
+    target_root_positions_xz = target_root_positions[:, [0,2]]
+    root_positions_xz = root_positions[:, [0,2]]
+                          
+    target_dist_norm = torch.sqrt(torch.square(target_root_positions_xz - root_positions_xz).sum(-1))
     # distance to the plane of the target position
     target_dist_plane =  root_positions[..., 1] - target_root_positions[..., 1]
     
@@ -469,18 +504,29 @@ def compute_drone_reward(root_positions, target_root_positions, root_quats, root
     #die = torch.where(collision_indicator > 0.0, ones, die)
     #print("Collision: ", target_dist)
     
+    collision_indicator = collision.abs().sum(dim=-1).sum(dim=-1)
+    collision_reward = torch.where(collision_indicator != 0.0, -20.0, 0.0)
+    reward += collision_reward
+    
     hoop = torch.where(target_dist < 0.5, ones, die)
     
     #reach target
     #Reach target
-    reach_goal = 10000.0
-    condition = torch.logical_and(target_dist_plane < 0.05, target_dist_norm < 0.010)
+    reach_goal = 15000.0
+    
+    condition = torch.logical_and(target_dist_plane < 0.05, target_dist_norm < 0.40)
 
     die = torch.where(condition, ones, die)
     reward = torch.where(condition, reward + reach_goal, reward)
+    target = torch.zeros_like(reset_buf)
+    target = torch.where(condition, ones, target)
+    
+    # condition out of hoop
+    condition = torch.logical_and(target_dist_plane < 0.0 , target_dist_norm >= 0.4)
+    die = torch.where(condition, ones, die)
     
 
     # resets due to episode length
     reset = torch.where(progress_buf >= max_episode_length - 1, ones, die)
 
-    return reward, reset
+    return reward, reset, target 
