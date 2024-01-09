@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # Load the data
-data = np.loadtxt('logs/data.csv', delimiter=',')
+data = np.loadtxt('logs/data_exp1_1.csv', delimiter=',')
 
 # Number of environments
-num_envs = 5
+num_envs = 64
 
 collision_counts = np.zeros(num_envs, dtype=int)
 reward_env = []
@@ -58,7 +58,7 @@ for i in range(num_envs):
     for hp in hoop_pos[splits]:
         x, y, z = hp
         for dy in [0.3]:
-            ax.plot([x-0.35, x+0.35, x+0.35, x-0.35, x-0.35], [y+dy]*5, [z-0.35, z-0.35, z+0.35, z+0.35, z-0.35], color='b')
+            ax.plot([x-0.35, x+0.35, x+0.35, x-0.35, x-0.35], [y+dy]*5, [z-0.35, z-0.35, z+0.35, z+0.35, z-0.35], color='r')
 
     ax.set_title(f'Environment {i+1} - 3D Positions')
     ax.set_xlabel('X')
@@ -75,6 +75,8 @@ for i in range(num_envs):
     ax.set_xlim(mid_x - max_range, mid_x + max_range)
     ax.set_ylim(mid_y - max_range, mid_y + max_range)
     ax.set_zlim(mid_z - max_range, mid_z + max_range)
+    
+    break
 
 
 plt.show()
