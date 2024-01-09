@@ -8,3 +8,15 @@ Classifier: Natural Language :: English
 Classifier: Programming Language :: Python :: 3.6, 3.7, 3.8
 Requires-Python: >=3.6
 License-File: LICENSE.txt
+Requires-Dist: gym==0.23.1
+Requires-Dist: torch
+Requires-Dist: omegaconf
+Requires-Dist: termcolor
+Requires-Dist: jinja2
+Requires-Dist: hydra-core>=1.2
+Requires-Dist: rl-games>=1.6.0
+Requires-Dist: pyvirtualdisplay
+Requires-Dist: urdfpy==0.0.22
+Requires-Dist: pysdf==0.1.9
+Requires-Dist: warp-lang==0.10.1
+Requires-Dist: trimesh==3.23.5

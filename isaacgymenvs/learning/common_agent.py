@@ -54,6 +54,7 @@ from tensorboardX import SummaryWriter
 class CommonAgent(a2c_continuous.A2CAgent):
 
     def __init__(self, base_name, params):
+        print("%#############################CommonAgent")
     
         a2c_common.A2CBase.__init__(self, base_name, params)
 

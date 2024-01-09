@@ -6,6 +6,8 @@ from math import sqrt, cos, sin
 # initialize gym
 gym = gymapi.acquire_gym()
 
+print("%#############################TEST")
+
 # parse arguments
 args = gymutil.parse_arguments(
     description="Collision Filtering: Demonstrates filtering of collisions within and between environments",
@@ -63,6 +65,7 @@ gym.subscribe_viewer_keyboard_event(viewer, gymapi.KEY_R, "reset")
 np.random.seed(17)
 
 for i in range(num_envs):
+    print("Creating env %d" % i)
     # create env
     env = gym.create_env(sim, env_lower, env_upper, num_per_row)
     envs.append(env)

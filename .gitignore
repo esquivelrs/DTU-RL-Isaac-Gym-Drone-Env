@@ -1,0 +1,14 @@
+isaacgymenvs/runs/*
+isaacgymenvs/wandb
+isaacgymenvs/isaacgymenvs.egg-info
+isaacgymenvs/__pycache__
+isaacgymenvs/.ipynb_checkpoints
+isaacgymenvs/.pytest_cache
+isaacgymenvs/.mypy_cache
+isaacgymenvs/recorded_frames
+*.csv
+*.log
+*.npz
+*.pkl
+*.prof
+*.pyc
