@@ -1,0 +1,30 @@
+/home/rolando/anaconda3/envs/rlgpu/lib/python3.7/site-packages/gym/spaces/box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+Sim Params:
+<isaacgym._bindings.linux-x86_64.gym_37.SimParams object at 0x7f9f932b5230>
+Creating sim
+(0, -1, SimType.SIM_PHYSX, <isaacgym._bindings.linux-x86_64.gym_37.SimParams object at 0x7f9f932b5230>)
+{}
+[93m[1m[Warning] [carb.gym.plugin] useGpu is set, forcing single scene (0 subscenes)
+Not connected to PVD
++++ Using GPU PhysX
+Physics Engine: PhysX
+Physics Device: cuda:0
+GPU Pipeline: enabled
+Total drone mass:  1.9399999752640724
+Collision:  torch.Size([40960, 3])
+Box(-1.0, 1.0, (4,), float32) Box(-inf, inf, (13,), float32)
+WARNING: seq_len is deprecated, use seq_length instead
+seq_length: 4
+current training device: cuda:0
+build mlp: 13
+RunningMeanStd:  (1,)
+RunningMeanStd:  (13,)
+fps step: 44557 fps step and policy inference: 36012 fps total: 21956 epoch: 1/500 frames: 0
+fps step: 133577 fps step and policy inference: 113569 fps total: 37871 epoch: 2/500 frames: 65536
+fps step: 127190 fps step and policy inference: 109619 fps total: 37442 epoch: 3/500 frames: 131072
+fps step: 132781 fps step and policy inference: 114832 fps total: 38054 epoch: 4/500 frames: 196608
+fps step: 127736 fps step and policy inference: 109710 fps total: 37443 epoch: 5/500 frames: 262144
+fps step: 127406 fps step and policy inference: 109545 fps total: 37419 epoch: 6/500 frames: 327680
+fps step: 130710 fps step and policy inference: 113062 fps total: 37659 epoch: 7/500 frames: 393216
+fps step: 126274 fps step and policy inference: 108604 fps total: 37143 epoch: 8/500 frames: 458752

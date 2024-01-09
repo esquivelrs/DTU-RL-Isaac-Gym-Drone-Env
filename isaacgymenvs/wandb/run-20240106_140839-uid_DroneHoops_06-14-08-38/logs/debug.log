@@ -1,0 +1,98 @@
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_setup.py:_flush():76] Configure stats pid to 48064
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_setup.py:_flush():76] Loading settings from /home/rolando/.config/wandb/settings
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_setup.py:_flush():76] Loading settings from /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/settings
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'isaacgymenvs/train.py', 'program': 'train.py'}
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_init.py:_log_setup():461] Logging user logs to /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/logs/debug.log
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_init.py:_log_setup():462] Logging internal logs to /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/logs/debug-internal.log
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_init.py:init():495] calling init triggers
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_init.py:init():499] wandb.init called with sweep_config: {}
+config: {}
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [wandb_init.py:init():548] starting backend
+2024-01-06 14:08:39,916 INFO    MainThread:48064 [backend.py:_multiprocessing_setup():99] multiprocessing start_methods=fork,spawn,forkserver, using: fork
+2024-01-06 14:08:39,923 INFO    MainThread:48064 [backend.py:ensure_launched():217] starting backend process...
+2024-01-06 14:08:39,930 INFO    MainThread:48064 [backend.py:ensure_launched():222] started backend process with pid: 48132
+2024-01-06 14:08:39,932 INFO    MainThread:48064 [wandb_init.py:init():558] backend started and connected
+2024-01-06 14:08:39,934 INFO    MainThread:48132 [internal.py:wandb_internal():93] W&B internal server running at pid: 48132, started at: 2024-01-06 14:08:39.932348
+2024-01-06 14:08:39,941 INFO    MainThread:48064 [wandb_init.py:init():634] updated telemetry
+2024-01-06 14:08:39,944 INFO    WriterThread:48132 [datastore.py:open_for_write():75] open: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/run-uid_DroneHoops_06-14-08-38.wandb
+2024-01-06 14:08:40,057 INFO    MainThread:48064 [wandb_init.py:init():666] communicating run to backend with 30 second timeout
+2024-01-06 14:08:40,061 INFO    SenderThread:48132 [sender.py:_maybe_setup_resume():494] checking resume status for rolando-esq/IsaacGymDrone/uid_DroneHoops_06-14-08-38
+2024-01-06 14:08:40,730 INFO    SenderThread:48132 [dir_watcher.py:__init__():216] watching files in: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files
+2024-01-06 14:08:40,730 INFO    SenderThread:48132 [sender.py:_start_run_threads():818] run started: uid_DroneHoops_06-14-08-38 with start time 1704546519
+2024-01-06 14:08:40,730 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:40,731 INFO    MainThread:48064 [wandb_run.py:_on_init():1919] communicating current version
+2024-01-06 14:08:40,793 INFO    MainThread:48064 [wandb_run.py:_on_init():1923] got version response upgrade_message: "wandb version 0.16.1 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-01-06 14:08:40,793 INFO    MainThread:48064 [wandb_init.py:init():700] starting run threads in backend
+2024-01-06 14:08:41,736 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/wandb-summary.json
+2024-01-06 14:08:41,737 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/conda-environment.yaml
+2024-01-06 14:08:41,737 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/requirements.txt
+2024-01-06 14:08:45,050 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-metadata.json with policy now
+2024-01-06 14:08:45,055 INFO    MainThread:48064 [wandb_run.py:_console_start():1893] atexit reg
+2024-01-06 14:08:45,056 INFO    MainThread:48064 [wandb_run.py:_redirect():1766] redirect: SettingsConsole.REDIRECT
+2024-01-06 14:08:45,056 INFO    MainThread:48064 [wandb_run.py:_redirect():1771] Redirecting console.
+2024-01-06 14:08:45,058 INFO    MainThread:48064 [wandb_run.py:_redirect():1827] Redirects installed.
+2024-01-06 14:08:45,059 INFO    MainThread:48064 [wandb_init.py:init():732] run started, returning control to user process
+2024-01-06 14:08:45,078 INFO    MainThread:48064 [wandb_run.py:_config_callback():1131] config_cb None None {'task': {'name': 'DroneHoops', 'physics_engine': 'physx', 'env': {'numEnvs': 4096, 'envSpacing': 2.5, 'maxEpisodeLength': 2000, 'enableDebugVis': False, 'clipObservations': 5.0, 'clipActions': 1.0, 'enableCameraSensors': False}, 'sim': {'dt': 0.01, 'substeps': 2, 'up_axis': 'z', 'use_gpu_pipeline': True, 'gravity': [0.0, 0.0, -9.81], 'physx': {'num_threads': 4, 'solver_type': 1, 'use_gpu': True, 'num_position_iterations': 6, 'num_velocity_iterations': 0, 'contact_offset': 0.02, 'rest_offset': 0.001, 'bounce_threshold_velocity': 0.2, 'max_depenetration_velocity': 1000.0, 'default_buffer_size_multiplier': 5.0, 'max_gpu_contact_pairs': 1048576, 'num_subscenes': 4, 'contact_collection': 1}}, 'task': {'randomize': False}}, 'train': {'params': {'seed': 42, 'algo': {'name': 'a2c_continuous'}, 'model': {'name': 'continuous_a2c_logstd'}, 'network': {'name': 'actor_critic', 'separate': False, 'space': {'continuous': {'mu_activation': 'None', 'sigma_activation': 'None', 'mu_init': {'name': 'default'}, 'sigma_init': {'name': 'const_initializer', 'val': 0}, 'fixed_sigma': True}}, 'mlp': {'units': [512, 512, 256, 128], 'activation': 'elu', 'd2rl': False, 'initializer': {'name': 'default'}, 'regularizer': {'name': 'None'}}}, 'load_checkpoint': False, 'load_path': '', 'config': {'name': 'DroneHoops', 'full_experiment_name': 'DroneHoops', 'env_name': 'rlgpu', 'multi_gpu': False, 'ppo': True, 'mixed_precision': False, 'normalize_input': True, 'normalize_value': True, 'num_actors': 4096, 'reward_shaper': {'scale_value': 0.01}, 'normalize_advantage': True, 'gamma': 0.99, 'tau': 0.95, 'learning_rate': 0.001, 'lr_schedule': 'adaptive', 'kl_threshold': 0.016, 'score_to_win': 20000, 'max_epochs': 500, 'save_best_after': 50, 'save_frequency': 50, 'grad_norm': 1.0, 'entropy_coef': 0.0, 'truncate_grads': True, 'e_clip': 0.2, 'horizon_length': 16, 'minibatch_size': 16384, 'mini_epochs': 8, 'critic_coef': 2, 'clip_value': True, 'seq_len': 4, 'bounds_loss_coef': 0.0001}}}, 'pbt': {'enabled': False}, 'task_name': 'DroneHoops', 'experiment': '', 'num_envs': '', 'seed': 42, 'torch_deterministic': False, 'max_iterations': '', 'physics_engine': 'physx', 'pipeline': 'gpu', 'sim_device': 'cuda:0', 'rl_device': 'cuda:0', 'graphics_device_id': 0, 'num_threads': 4, 'solver_type': 1, 'num_subscenes': 4, 'test': False, 'checkpoint': '', 'sigma': '', 'multi_gpu': False, 'wandb_activate': True, 'wandb_group': '', 'wandb_name': 'DroneHoops', 'wandb_entity': 'rolando-esq', 'wandb_project': 'IsaacGymDrone', 'wandb_tags': [], 'wandb_logcode_dir': '', 'capture_video': False, 'capture_video_freq': 1464, 'capture_video_len': 100, 'force_render': True, 'headless': True}
+2024-01-06 14:08:45,627 INFO    Thread-12 :48132 [upload_job.py:push():138] Uploaded file /tmp/tmps3pi5e44wandb/2pqprh3c-wandb-metadata.json
+2024-01-06 14:08:45,735 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/conda-environment.yaml
+2024-01-06 14:08:45,735 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:45,735 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/wandb-metadata.json
+2024-01-06 14:08:46,787 INFO    MainThread:48064 [wandb_run.py:_tensorboard_callback():1239] tensorboard callback: runs/DroneHoops_06-14-08-38/summaries, True
+2024-01-06 14:08:46,788 INFO    HandlerThread:48132 [handler.py:handle_tbrecord():723] handling tbrecord: tbrecord {
+  log_dir: "runs/DroneHoops_06-14-08-38/summaries"
+  save: true
+}
+
+2024-01-06 14:08:46,846 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file events.out.tfevents.1704546526.pop-os with policy live
+2024-01-06 14:08:47,736 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:47,736 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_created():269] file/dir created: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/events.out.tfevents.1704546526.pop-os
+2024-01-06 14:08:49,737 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:51,738 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:53,738 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:55,739 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:55,739 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/events.out.tfevents.1704546526.pop-os
+2024-01-06 14:08:56,297 INFO    Thread-15 :48132 [upload_job.py:push():138] Uploaded file /tmp/tmps3pi5e44wandb/30dx1jff-events.out.tfevents.1704546526.pop-os
+2024-01-06 14:08:56,906 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,907 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,908 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,909 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,910 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,911 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,911 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,912 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:56,913 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:08:57,740 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:08:57,740 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/wandb-summary.json
+2024-01-06 14:08:59,740 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:09:00,740 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/events.out.tfevents.1704546526.pop-os
+2024-01-06 14:09:00,943 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,945 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,946 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,947 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,948 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,949 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,950 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,950 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,951 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,951 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,952 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:00,952 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:01,741 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:09:01,741 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/wandb-summary.json
+2024-01-06 14:09:03,741 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:09:05,742 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/output.log
+2024-01-06 14:09:05,742 INFO    Thread-8  :48132 [dir_watcher.py:_on_file_modified():286] file/dir modified: /home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone/isaacgymenvs/wandb/run-20240106_140839-uid_DroneHoops_06-14-08-38/files/events.out.tfevents.1704546526.pop-os
+2024-01-06 14:09:05,993 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,994 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,995 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,996 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,997 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,997 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,998 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,999 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:05,999 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:06,000 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:06,001 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2024-01-06 14:09:06,001 INFO    SenderThread:48132 [sender.py:_save_file():952] saving file wandb-summary.json with policy end

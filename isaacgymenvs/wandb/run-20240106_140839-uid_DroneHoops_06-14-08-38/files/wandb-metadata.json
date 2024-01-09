@@ -1,0 +1,27 @@
+{
+    "os": "Linux-6.5.6-76060506-generic-x86_64-with-debian-bookworm-sid",
+    "python": "3.7.12",
+    "heartbeatAt": "2024-01-06T13:08:40.806592",
+    "startedAt": "2024-01-06T13:08:39.914678",
+    "docker": null,
+    "gpu": "NVIDIA GeForce GTX 1050",
+    "gpu_count": 1,
+    "cpu_count": 12,
+    "cuda": null,
+    "args": [
+        "task=DroneHoops",
+        "headless=True"
+    ],
+    "state": "running",
+    "program": "train.py",
+    "codePath": "isaacgymenvs/train.py",
+    "git": {
+        "remote": "git@github.com:esquivelrs/DTU-RL-Isaac-Gym-Drone-Env.git",
+        "commit": "2e3047dc81447da657ffc83575df8a35ade2f189"
+    },
+    "email": "rolando.esq@gmail.com",
+    "root": "/home/rolando/Documents/DTU/ReinforcementLearning/isaac/IsaacGymDrone",
+    "host": "pop-os",
+    "username": "rolando",
+    "executable": "/home/rolando/anaconda3/envs/rlgpu/bin/python"
+}
