@@ -22,14 +22,12 @@ pip install -e .
 ```
 ### Tasks
 * Drone: A basic drone designed to reach a target point or marker and attempt to stabilize itself there.
-<video width="640" height="480" controls>
-  <source src="assets/repo/Drone.mp4" type="video/mp4">
-</video>
+![Alt Text](assets/repo/Drone.gif)
 
 
 * DroneHoops: A drone designed to fly toward a hoop and pass through it.
+![Alt Text](assets/repo/Dronehoops.gif)
 
-[![Watch the video](https://img.youtube.com/vi/UnJVJkRaIU8/maxresdefault.jpg)](https://youtu.be/UnJVJkRaIU8)
 
 ### Running the training
 
