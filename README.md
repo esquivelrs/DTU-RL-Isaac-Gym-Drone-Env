@@ -20,18 +20,33 @@ Once Isaac Gym is installed and samples work within your current python environm
 ```bash
 pip install -e .
 ```
+### Tasks
+* Drone: A basic drone designed to reach a target point or marker and attempt to stabilize itself there.
+<video width="640" height="480" controls>
+  <source src="assets/repo/Drone.mp4" type="video/mp4">
+</video>
 
 
+* DroneHoops: A drone designed to fly toward a hoop and pass through it.
+<video width="640" height="480" controls>
+  <source src="assets/repo/DroneHoops.mp4" type="video/mp4">
+</video>
 
 ### Running the training
 
-To train your first policy, run this line:
+To train your first policy, navigate to the `isaacgymenvs` directory:
+
+```bash
+cd isaacgymenvs
+```
+
+Then run the following command:
 
 ```bash
 python train.py task=DroneHoops
 ```
 
-Alternatively, you can train headlessly, as follows:
+You can also train headlessly with the following command:
 
 ```bash
 python train.py task=DroneHoops headless=True
