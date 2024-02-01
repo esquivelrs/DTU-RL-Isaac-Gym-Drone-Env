@@ -28,9 +28,8 @@ pip install -e .
 
 
 * DroneHoops: A drone designed to fly toward a hoop and pass through it.
-<video width="640" height="480" controls>
-  <source src="assets/repo/DroneHoops.mp4" type="video/mp4">
-</video>
+
+[![Watch the video](https://img.youtube.com/vi/UnJVJkRaIU8/maxresdefault.jpg)](https://youtu.be/UnJVJkRaIU8)
 
 ### Running the training
 
